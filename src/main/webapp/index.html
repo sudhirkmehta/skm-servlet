@@ -1,0 +1,99 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Java Servlet</title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<script>
+function drawOutput(data){
+	$("#i_uid").val("");
+	$("#i_name").val("");
+	var xml = data;
+  	var xmlDoc = $.parseXML(xml);
+  	$xml = $(xmlDoc); 			
+ 	$("#i_rUID").html($xml.find("uid").text());
+ 	$("#i_rName").html($xml.find("name").text());
+ 	$("#i_rStatus").html($xml.find("status").text());
+ 	$("#i_rMessage").html($xml.find("message").text()); 			
+ 	$("#i_respBdy").slideDown(1000);
+}
+
+$(document).ready(function(){
+    
+    $("#i_getBtn").click(function(){
+    	$("#i_respBdy").slideUp(10);
+    	var v_uid = $("#i_uid").val();
+        $.get("UserServlet",
+        {
+          uid: v_uid
+        },
+        function(data,status){
+            //alert("Data: " + data + "\nStatus: " + status);
+            drawOutput(data);                    
+        });
+    });
+    
+    $("#i_postBtn").click(function(){
+    	$("#i_respBdy").slideUp(10);
+    	var v_uid = $("#i_uid").val();
+    	var v_name = $("#i_name").val();
+        $.post("UserServlet",
+        {
+          uid: v_uid,
+          name: v_name
+        },
+        function(data,status){
+            //alert("Data: " + data + "\nStatus: " + status);
+            drawOutput(data);
+        });
+    });
+});
+</script>
+<style> 
+#i_respHdr, #i_respBdy {
+    padding: 5px;
+    text-align: center;
+    background-color: #e5eecc;
+    border: solid 1px #c3c3c3;
+}
+
+#i_respBdy {
+    padding: 50px;
+    display: none;
+}
+.c-cell th,td {
+        border: 2px solid #33b5e5;
+        border-collapse: collapse;
+        width:25%;
+    }
+</style>
+</head>
+<body>
+	<h2>User Servlet</h2>
+	
+	<p>UID: <input type="text" id="i_uid" value=""></p>
+	<p>Name: <input type="text" id="i_name" value=""></p>
+	
+	<button id="i_getBtn">Get</button>
+	<button id="i_postBtn">Post</button>
+	
+	<div id="i_respHdr"><h4>Response</h4></div>
+	<div id="i_respBdy">
+		<table class="c-cell">
+		<tr>
+			<th>UID</th>
+			<th>Name</th>
+			<th>Status</th>
+			<th>Message</th>
+		</tr>
+		<tr>
+			<td id="i_rUID"></td>
+			<td id="i_rName"></td>
+			<td id="i_rStatus"></td>
+			<td id="i_rMessage"></td>
+		</tr>
+		</table>
+	</div>
+	
+</body>
+</html>
